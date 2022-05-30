@@ -62,6 +62,36 @@ public class CalculatorClient {
         latch.await(3, TimeUnit.SECONDS);
     }
 
+    public static void doMax(ManagedChannel channel) throws InterruptedException {
+        System.out.println("Enter doMax");
+        CalculatorServiceGrpc.CalculatorServiceStub stub = CalculatorServiceGrpc.newStub(channel);
+        CountDownLatch latch = new CountDownLatch(1);
+
+        StreamObserver<MaxRequest> stream = stub.max(new StreamObserver<MaxResponse>() {
+            @Override
+            public void onNext(MaxResponse response) {
+                System.out.println("Max: " + response.getMax());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+                latch.countDown();
+            }
+        });
+
+        Arrays.asList(1, 71, 64, 1000, 39, 550, 8, 7007, 92, 9999, 1).forEach(number -> {
+            stream.onNext(MaxRequest.newBuilder().setNumber(number).build());
+        });
+
+        stream.onCompleted();
+        latch.await(3, TimeUnit.SECONDS);
+    }
+
     public static void main(String[] args) throws InterruptedException {
         if (args.length == 0) {
             System.out.println("Needs one argument to work");
@@ -76,6 +106,7 @@ public class CalculatorClient {
             case "sum": doSum(channel); break;
             case "primes": doPrimes(channel); break;
             case "avg": doAvg(channel); break;
+            case "max": doMax(channel); break;
             default:
                 System.out.println("Keyword Invalid" + args[0]);
         }
