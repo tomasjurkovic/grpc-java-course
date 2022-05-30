@@ -25,10 +25,12 @@ public final class Calculator {
     java.lang.String[] descriptorData = {
       "\n\033calculator/calculator.proto\022\ncalculato" +
       "r\032\024calculator/sum.proto\032\027calculator/prim" +
-      "es.proto2\216\001\n\021CalculatorService\0226\n\003sum\022\026." +
-      "calculator.SumRequest\032\027.calculator.SumRe" +
-      "sponse\022A\n\006primes\022\031.calculator.PrimesRequ" +
-      "est\032\032.calculator.PrimesResponse0\001B\030\n\024com" +
+      "es.proto\032\024calculator/avg.proto2\310\001\n\021Calcu" +
+      "latorService\0226\n\003sum\022\026.calculator.SumRequ" +
+      "est\032\027.calculator.SumResponse\022A\n\006primes\022\031" +
+      ".calculator.PrimesRequest\032\032.calculator.P" +
+      "rimesResponse0\001\0228\n\003avg\022\026.calculator.AvgR" +
+      "equest\032\027.calculator.AvgResponse(\001B\030\n\024com" +
       ".proto.calculatorP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
@@ -36,9 +38,11 @@ public final class Calculator {
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.proto.calculator.Sum.getDescriptor(),
           com.proto.calculator.Primes.getDescriptor(),
+          com.proto.calculator.Avg.getDescriptor(),
         });
     com.proto.calculator.Sum.getDescriptor();
     com.proto.calculator.Primes.getDescriptor();
+    com.proto.calculator.Avg.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)
