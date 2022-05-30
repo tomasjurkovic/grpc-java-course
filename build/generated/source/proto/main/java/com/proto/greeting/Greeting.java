@@ -35,7 +35,7 @@ public final class Greeting {
     java.lang.String[] descriptorData = {
       "\n\027greeting/greeting.proto\022\010greeting\"%\n\017G" +
       "reetingRequest\022\022\n\nfirst_name\030\001 \001(\t\"\"\n\020Gr" +
-      "eetingResponse\022\016\n\006result\030\001 \001(\t2\256\002\n\017Greet" +
+      "eetingResponse\022\016\n\006result\030\001 \001(\t2\372\002\n\017Greet" +
       "ingService\022>\n\005greet\022\031.greeting.GreetingR" +
       "equest\032\032.greeting.GreetingResponse\022I\n\016gr" +
       "eetManyTimes\022\031.greeting.GreetingRequest\032" +
@@ -43,8 +43,10 @@ public final class Greeting {
       "et\022\031.greeting.GreetingRequest\032\032.greeting" +
       ".GreetingResponse(\001\022J\n\rgreetEveryone\022\031.g" +
       "reeting.GreetingRequest\032\032.greeting.Greet" +
-      "ingResponse(\0010\001B\026\n\022com.proto.greetingP\001b" +
-      "\006proto3"
+      "ingResponse(\0010\001\022J\n\021greetWithDeadline\022\031.g" +
+      "reeting.GreetingRequest\032\032.greeting.Greet" +
+      "ingResponseB\026\n\022com.proto.greetingP\001b\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
