@@ -92,6 +92,24 @@ public class CalculatorClient {
         latch.await(3, TimeUnit.SECONDS);
     }
 
+    private static void doSqrt(ManagedChannel channel) {
+        System.out.println("Enter doSqrt");
+        CalculatorServiceGrpc.CalculatorServiceBlockingStub stub = CalculatorServiceGrpc.newBlockingStub(channel);
+
+        SqrtResponse response = stub.sqrt(SqrtRequest.newBuilder().setNumber(91).build());
+        System.out.println("Sqrt 91 = " + response.getResult());
+
+        // this will cause error, because it is defined, that only numbers greater than zero are valid
+        try {
+            response = stub.sqrt(SqrtRequest.newBuilder().setNumber(-91).build());
+            System.out.println("Sqrt -91 = " + response.getResult());
+        } catch (RuntimeException e) {
+            System.out.println("Got an exception for sqrt");
+            e.printStackTrace();
+        }
+
+    }
+
     public static void main(String[] args) throws InterruptedException {
         if (args.length == 0) {
             System.out.println("Needs one argument to work");
@@ -107,6 +125,7 @@ public class CalculatorClient {
             case "primes": doPrimes(channel); break;
             case "avg": doAvg(channel); break;
             case "max": doMax(channel); break;
+            case "sqrt": doSqrt(channel); break;
             default:
                 System.out.println("Keyword Invalid" + args[0]);
         }

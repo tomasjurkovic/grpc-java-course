@@ -9,10 +9,14 @@ import "calculator/sum.proto";
 import "calculator/primes.proto";
 import "calculator/avg.proto";
 import "calculator/max.proto";
+import "calculator/sqrt.proto";
 
 service CalculatorService {
   rpc sum(SumRequest) returns (SumResponse);
   rpc primes(PrimesRequest) returns (stream PrimesResponse);
   rpc avg(stream AvgRequest) returns (AvgResponse);
   rpc max(stream MaxRequest) returns (stream MaxResponse);
+
+  // this function returns Status.INVALID_ARGUMENT if the SqrtRequest id negative number.
+  rpc sqrt(SqrtRequest) returns (SqrtResponse);
 }

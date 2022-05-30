@@ -139,6 +139,37 @@ public final class CalculatorServiceGrpc {
     return getMaxMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.proto.calculator.SqrtRequest,
+      com.proto.calculator.SqrtResponse> getSqrtMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "sqrt",
+      requestType = com.proto.calculator.SqrtRequest.class,
+      responseType = com.proto.calculator.SqrtResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.proto.calculator.SqrtRequest,
+      com.proto.calculator.SqrtResponse> getSqrtMethod() {
+    io.grpc.MethodDescriptor<com.proto.calculator.SqrtRequest, com.proto.calculator.SqrtResponse> getSqrtMethod;
+    if ((getSqrtMethod = CalculatorServiceGrpc.getSqrtMethod) == null) {
+      synchronized (CalculatorServiceGrpc.class) {
+        if ((getSqrtMethod = CalculatorServiceGrpc.getSqrtMethod) == null) {
+          CalculatorServiceGrpc.getSqrtMethod = getSqrtMethod =
+              io.grpc.MethodDescriptor.<com.proto.calculator.SqrtRequest, com.proto.calculator.SqrtResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "sqrt"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.proto.calculator.SqrtRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.proto.calculator.SqrtResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new CalculatorServiceMethodDescriptorSupplier("sqrt"))
+              .build();
+        }
+      }
+    }
+    return getSqrtMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -215,6 +246,16 @@ public final class CalculatorServiceGrpc {
       return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getMaxMethod(), responseObserver);
     }
 
+    /**
+     * <pre>
+     * this function returns Status.INVALID_ARGUMENT if the SqrtRequest id negative number.
+     * </pre>
+     */
+    public void sqrt(com.proto.calculator.SqrtRequest request,
+        io.grpc.stub.StreamObserver<com.proto.calculator.SqrtResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSqrtMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -245,6 +286,13 @@ public final class CalculatorServiceGrpc {
                 com.proto.calculator.MaxRequest,
                 com.proto.calculator.MaxResponse>(
                   this, METHODID_MAX)))
+          .addMethod(
+            getSqrtMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                com.proto.calculator.SqrtRequest,
+                com.proto.calculator.SqrtResponse>(
+                  this, METHODID_SQRT)))
           .build();
     }
   }
@@ -294,6 +342,17 @@ public final class CalculatorServiceGrpc {
       return io.grpc.stub.ClientCalls.asyncBidiStreamingCall(
           getChannel().newCall(getMaxMethod(), getCallOptions()), responseObserver);
     }
+
+    /**
+     * <pre>
+     * this function returns Status.INVALID_ARGUMENT if the SqrtRequest id negative number.
+     * </pre>
+     */
+    public void sqrt(com.proto.calculator.SqrtRequest request,
+        io.grpc.stub.StreamObserver<com.proto.calculator.SqrtResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSqrtMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -324,6 +383,16 @@ public final class CalculatorServiceGrpc {
       return io.grpc.stub.ClientCalls.blockingServerStreamingCall(
           getChannel(), getPrimesMethod(), getCallOptions(), request);
     }
+
+    /**
+     * <pre>
+     * this function returns Status.INVALID_ARGUMENT if the SqrtRequest id negative number.
+     * </pre>
+     */
+    public com.proto.calculator.SqrtResponse sqrt(com.proto.calculator.SqrtRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSqrtMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -347,12 +416,24 @@ public final class CalculatorServiceGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getSumMethod(), getCallOptions()), request);
     }
+
+    /**
+     * <pre>
+     * this function returns Status.INVALID_ARGUMENT if the SqrtRequest id negative number.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.proto.calculator.SqrtResponse> sqrt(
+        com.proto.calculator.SqrtRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSqrtMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SUM = 0;
   private static final int METHODID_PRIMES = 1;
-  private static final int METHODID_AVG = 2;
-  private static final int METHODID_MAX = 3;
+  private static final int METHODID_SQRT = 2;
+  private static final int METHODID_AVG = 3;
+  private static final int METHODID_MAX = 4;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -378,6 +459,10 @@ public final class CalculatorServiceGrpc {
         case METHODID_PRIMES:
           serviceImpl.primes((com.proto.calculator.PrimesRequest) request,
               (io.grpc.stub.StreamObserver<com.proto.calculator.PrimesResponse>) responseObserver);
+          break;
+        case METHODID_SQRT:
+          serviceImpl.sqrt((com.proto.calculator.SqrtRequest) request,
+              (io.grpc.stub.StreamObserver<com.proto.calculator.SqrtResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -450,6 +535,7 @@ public final class CalculatorServiceGrpc {
               .addMethod(getPrimesMethod())
               .addMethod(getAvgMethod())
               .addMethod(getMaxMethod())
+              .addMethod(getSqrtMethod())
               .build();
         }
       }
