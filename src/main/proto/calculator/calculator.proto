@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package calculator;
+
+option java_package = "com.proto.calculator";
+option java_multiple_files = true;
+
+import "calculator/sum.proto";
+import "calculator/primes.proto";
+
+service CalculatorService {
+  rpc sum(SumRequest) returns (SumResponse);
+  rpc primes(PrimesRequest) returns (stream PrimesResponse);
+}
