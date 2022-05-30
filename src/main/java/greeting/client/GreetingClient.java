@@ -5,6 +5,14 @@ import com.proto.greeting.GreetingResponse;
 import com.proto.greeting.GreetingServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.stub.StreamObserver;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class GreetingClient {
 
@@ -25,7 +33,41 @@ public class GreetingClient {
         });
     }
 
-    public static void main(String[] args) {
+    public static void doLongGreet(ManagedChannel channel) throws InterruptedException {
+        System.out.println("Enter doLongGreet");
+        GreetingServiceGrpc.GreetingServiceStub stub = GreetingServiceGrpc.newStub(channel);
+
+        List<String> names = new ArrayList<>();
+        CountDownLatch latch = new CountDownLatch(1);
+
+        Collections.addAll(names, "Clement", "Marie", "James");
+
+        StreamObserver<GreetingRequest> stream = stub.longGreet(new StreamObserver<GreetingResponse>() {
+            @Override
+            public void onNext(GreetingResponse response) {
+                System.out.println(response.getResult());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+                latch.countDown();
+            }
+        });
+
+        for(String name : names) {
+            stream.onNext(GreetingRequest.newBuilder().setFirstName(name).build());
+        }
+
+        stream.onCompleted();
+        latch.await(3, TimeUnit.SECONDS);
+    }
+
+    public static void main(String[] args) throws InterruptedException {
         if (args.length == 0) {
             System.out.println("Needs an argument to search");
             return;
@@ -39,6 +81,7 @@ public class GreetingClient {
         switch (args[0]) {
             case "greet": doGreet(channel); break;
             case "greet_many_times": doGreetManyTimes(channel); break;
+            case "long_greet": doLongGreet(channel); break;
             default:
                 System.out.println("Keyword Invalid " + args[0]);
         }
