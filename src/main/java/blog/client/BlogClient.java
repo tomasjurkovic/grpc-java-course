@@ -29,6 +29,17 @@ public class BlogClient {
         }
     }
 
+    private static void readBlog(BlogServiceGrpc.BlogServiceBlockingStub stub, BlogId blogId) {
+        try {
+            Blog readResponse = stub.readBlog(blogId);
+
+            System.out.println("Blog read: " + readResponse);
+        } catch (StatusRuntimeException e) {
+            System.out.println("Could not read the blog");
+            e.printStackTrace();
+        }
+    }
+
     private static void run(ManagedChannel channel) {
 
         BlogServiceGrpc.BlogServiceBlockingStub stub = BlogServiceGrpc.newBlockingStub(channel);
@@ -38,6 +49,8 @@ public class BlogClient {
         if (blogId == null) {
             return;
         }
+
+        readBlog(stub, blogId);
     }
 
     public static void main(String[] args) {
