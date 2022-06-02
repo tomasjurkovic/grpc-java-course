@@ -6,7 +6,6 @@ import com.proto.blog.BlogId;
 import com.proto.blog.BlogServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 
 public class BlogClient {
@@ -63,6 +62,16 @@ public class BlogClient {
         stub.listBlogs(Empty.getDefaultInstance()).forEachRemaining(System.out::println);
     }
 
+    private static void deleteBlog(BlogServiceGrpc.BlogServiceBlockingStub stub, BlogId blogId) {
+        try {
+            stub.deleteBlog(blogId);
+            System.out.println("Blog deleted: " + blogId.getId());
+        } catch (StatusRuntimeException e) {
+            System.out.println("The blog could not be deleted");
+            e.printStackTrace();
+        }
+    }
+
     private static void run(ManagedChannel channel) {
 
         BlogServiceGrpc.BlogServiceBlockingStub stub = BlogServiceGrpc.newBlockingStub(channel);
@@ -76,6 +85,7 @@ public class BlogClient {
         readBlog(stub, blogId);
         updateBlog(stub, blogId);
         listBlogs(stub);
+        deleteBlog(stub, blogId);
     }
 
     public static void main(String[] args) {

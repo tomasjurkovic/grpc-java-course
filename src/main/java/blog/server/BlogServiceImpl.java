@@ -5,6 +5,7 @@ import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertOneResult;
 import com.proto.blog.Blog;
 import com.proto.blog.BlogId;
@@ -130,6 +131,46 @@ public class BlogServiceImpl extends BlogServiceGrpc.BlogServiceImplBase {
 
         }
 
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void deleteBlog(BlogId request, StreamObserver<Empty> responseObserver) {
+        if (request.getId().isEmpty()) {
+            responseObserver.onError(Status.INVALID_ARGUMENT
+                    .withDescription("The Blog ID cannot be empty.")
+                    .asRuntimeException());
+            return;
+        }
+
+        String id = request.getId();
+        DeleteResult result;
+
+        try {
+            result = mongoCollection.deleteOne(eq("_id", new ObjectId(id)));
+        } catch (MongoException e) {
+            responseObserver.onError(Status.INTERNAL
+                    .withDescription("the blog could not be deleted")
+                    .asRuntimeException());
+            return;
+        }
+
+        if (!result.wasAcknowledged()) {
+            responseObserver.onError(Status.INTERNAL
+                    .withDescription("Blog could not be deleted")
+                    .asRuntimeException());
+            return;
+        }
+
+        if (result.getDeletedCount() == 0) {
+            responseObserver.onError(Status.NOT_FOUND
+                    .withDescription("The blog was not found")
+                    .augmentDescription("BlogId: " + id)
+                    .asRuntimeException());
+            return;
+        }
+
+        responseObserver.onNext(Empty.getDefaultInstance());
         responseObserver.onCompleted();
     }
 }
