@@ -5,6 +5,7 @@ import com.proto.blog.BlogId;
 import com.proto.blog.BlogServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 
 public class BlogClient {
@@ -40,6 +41,23 @@ public class BlogClient {
         }
     }
 
+    public static void updateBlog(BlogServiceGrpc.BlogServiceBlockingStub stub, BlogId blogId) {
+        try {
+            Blog newBlog = Blog.newBuilder()
+                    .setId(blogId.getId())
+                    .setAuthor("Tomas J")
+                    .setTitle("Updated blog")
+                    .setContent("Hello world, this blog is updated now. I added some more content to it.")
+                    .build();
+
+            stub.updateBlog(newBlog);
+            System.out.println("Blog updated: " + newBlog);
+        } catch (StatusRuntimeException e) {
+            System.out.println("Could not update the blog");
+            e.printStackTrace();
+        }
+    }
+
     private static void run(ManagedChannel channel) {
 
         BlogServiceGrpc.BlogServiceBlockingStub stub = BlogServiceGrpc.newBlockingStub(channel);
@@ -51,6 +69,8 @@ public class BlogClient {
         }
 
         readBlog(stub, blogId);
+        updateBlog(stub, blogId);
+
     }
 
     public static void main(String[] args) {
