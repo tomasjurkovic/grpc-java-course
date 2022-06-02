@@ -1,5 +1,6 @@
 package blog.client;
 
+import com.google.protobuf.Empty;
 import com.proto.blog.Blog;
 import com.proto.blog.BlogId;
 import com.proto.blog.BlogServiceGrpc;
@@ -41,7 +42,7 @@ public class BlogClient {
         }
     }
 
-    public static void updateBlog(BlogServiceGrpc.BlogServiceBlockingStub stub, BlogId blogId) {
+    private static void updateBlog(BlogServiceGrpc.BlogServiceBlockingStub stub, BlogId blogId) {
         try {
             Blog newBlog = Blog.newBuilder()
                     .setId(blogId.getId())
@@ -58,6 +59,10 @@ public class BlogClient {
         }
     }
 
+    private static void listBlogs(BlogServiceGrpc.BlogServiceBlockingStub stub) {
+        stub.listBlogs(Empty.getDefaultInstance()).forEachRemaining(System.out::println);
+    }
+
     private static void run(ManagedChannel channel) {
 
         BlogServiceGrpc.BlogServiceBlockingStub stub = BlogServiceGrpc.newBlockingStub(channel);
@@ -70,7 +75,7 @@ public class BlogClient {
 
         readBlog(stub, blogId);
         updateBlog(stub, blogId);
-
+        listBlogs(stub);
     }
 
     public static void main(String[] args) {
