@@ -32,6 +32,17 @@ public class UserClient {
         }
     }
 
+    private static void readUser(UserServiceGrpc.UserServiceBlockingStub stub, UserId userId) {
+        try {
+            User readResponse = stub.readUser(userId);
+
+            System.out.println("User read: " + readResponse);
+        } catch (StatusRuntimeException e) {
+            System.out.println("Could not read the blog");
+            e.printStackTrace();
+        }
+    }
+
     private static void run(ManagedChannel channel) {
         UserServiceGrpc.UserServiceBlockingStub stub = UserServiceGrpc.newBlockingStub(channel);
 
@@ -40,6 +51,9 @@ public class UserClient {
         if (userId == null) {
             return;
         }
+
+        readUser(stub, userId);
+
     }
 
     public static void main(String[] args) {
