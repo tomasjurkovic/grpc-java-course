@@ -1,10 +1,12 @@
 package user.server;
 
+import com.google.protobuf.Empty;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertOneResult;
 import com.proto.blog.User;
 import com.proto.blog.UserId;
@@ -86,6 +88,62 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
                 .setPhone(result.getString("phone"))
                 .setEmail(result.getString("email"))
                 .build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void listUsers(Empty request, StreamObserver<User> responseObserver) {
+        for (Document document : mongoCollection.find()) {
+            responseObserver.onNext(User.newBuilder()
+                    .setId(document.getObjectId("_id").toString())
+                    .setFirstName(document.getString("first_name"))
+                    .setLastName(document.getString("last_name"))
+                    .setAge(document.getInteger("age"))
+                    .setPhone(document.getString("phone"))
+                    .setEmail(document.getString("email"))
+                    .build());
+        }
+
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void deleteUser(UserId request, StreamObserver<Empty> responseObserver) {
+        if (request.getId().isEmpty()) {
+            responseObserver.onError(Status.INVALID_ARGUMENT
+                    .withDescription("The User ID cannot be empty")
+                    .asRuntimeException());
+            return;
+        }
+
+        String id = request.getId();
+        DeleteResult result;
+
+        try {
+            result = mongoCollection.deleteOne(eq("_id", new ObjectId(id)));
+        } catch (MongoException e) {
+            responseObserver.onError(Status.INTERNAL
+                    .withDescription("User cannot be deleted")
+                    .asRuntimeException());
+            return;
+        }
+
+        if (!result.wasAcknowledged()) {
+            responseObserver.onError(Status.INTERNAL
+                    .withDescription("User could not be deleted")
+                    .asRuntimeException());
+            return;
+        }
+
+        if (result.getDeletedCount() == 0) {
+            responseObserver.onError(Status.NOT_FOUND
+                    .withDescription("The blog was not found")
+                    .augmentDescription("BlogId: " + id)
+                    .asRuntimeException());
+            return;
+        }
+
+        responseObserver.onNext(Empty.getDefaultInstance());
         responseObserver.onCompleted();
     }
 }

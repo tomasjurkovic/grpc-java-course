@@ -1,5 +1,6 @@
 package user.client;
 
+import com.google.protobuf.Empty;
 import com.proto.blog.User;
 import com.proto.blog.UserId;
 import com.proto.blog.UserServiceGrpc;
@@ -14,11 +15,11 @@ public class UserClient {
         try {
             UserId createResponse = stub.createUser(
                     User.newBuilder()
-                            .setFirstName("Tomas")
-                            .setLastName("Jurkovic")
-                            .setAge(28)
-                            .setPhone("0903909901")
-                            .setEmail("tomas.jurkovic@hotmail.com")
+                            .setFirstName("Diego")
+                            .setLastName("Costa")
+                            .setAge(38)
+                            .setPhone("0911234225")
+                            .setEmail("diego.costa@hotmail.com")
                             .build()
             );
 
@@ -43,6 +44,20 @@ public class UserClient {
         }
     }
 
+    private static void listUsers(UserServiceGrpc.UserServiceBlockingStub stub) {
+        stub.listUsers(Empty.getDefaultInstance()).forEachRemaining(System.out::println);
+    }
+
+    private static void deleteUser(UserServiceGrpc.UserServiceBlockingStub stub, UserId userId) {
+        try {
+            stub.deleteUser(userId);
+            System.out.println("User deleted: " + userId.getId());
+        } catch (StatusRuntimeException e) {
+            System.out.println("User cannot be deleted");
+            e.printStackTrace();
+        }
+    }
+
     private static void run(ManagedChannel channel) {
         UserServiceGrpc.UserServiceBlockingStub stub = UserServiceGrpc.newBlockingStub(channel);
 
@@ -53,6 +68,8 @@ public class UserClient {
         }
 
         readUser(stub, userId);
+        listUsers(stub);
+        deleteUser(stub, userId);
 
     }
 
